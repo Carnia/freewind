@@ -44,7 +44,7 @@ Freewind主题专属站点公告插件: [传送门](https://kevinlu98.cn/archive
 ## 更新详情
 ### V1.4
 
-- **传送门：** [Freewind 1.4]更新(https://kevinlu98.cn/archives/103.html)
+- **传送门：** [Freewind 1.4更新](https://kevinlu98.cn/archives/103.html)
 
 - 对默认编辑器做了增强，freewind主题也有了自己内置的编辑器了，请参考： [Freewind主题编辑器展示](https://kevinlu98.cn/archives/101.html)，在`markdown`之外做了如下扩展
   - 加入了提示组件
