@@ -36,6 +36,8 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <!-- 阿里图标库 -->
     <link rel="stylesheet" href="//at.alicdn.com/t/font_2416373_qj7t1m32fee.css">
+    <!-- 阿里图标库经常挂，这里做本地备份 -->
+    <!-- <link rel="stylesheet" href="<?php $this->options->themeUrl('static/css/font/font_2416373_qj7t1m32fee.css'); ?>"> -->
     <!-- tocbot 文章目录生成 -->
     <link href="https://cdn.bootcdn.net/ajax/libs/tocbot/4.13.0/tocbot.min.css" rel="stylesheet">
     <script src="https://cdn.bootcdn.net/ajax/libs/tocbot/4.13.0/tocbot.min.js"></script>
