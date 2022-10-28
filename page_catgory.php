@@ -4,6 +4,10 @@
  *
  * @package custom
  */
+
+use Freewind\Core\Article;
+use Typecho\Plugin;
+
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('include/header.php');
 ?>
@@ -34,7 +38,7 @@ $this->need('include/header.php');
             ), '', ''); ?></strong>
     </div>
     <div style="margin:10px 20px;">
-        <?php Typecho_Plugin::factory('freewind')->contentTop($this); ?>
+        <?php Plugin::factory('freewind')->contentTop($this); ?>
     </div>
     <div class="page-bg">
         <ul class="category-list bottom-shadow">
@@ -49,7 +53,11 @@ $this->need('include/header.php');
                             <span>(Total <?php $category->count(); ?> articles)</span>
                         </p>
                         <p class="category-update">
-                            最后更新: <?php echo Freewind_Article::meta_last_modify($category->mid); ?>
+                            最后更新: <?php try {
+                                echo Article::meta_last_modify($category->mid);
+                            } catch (\Typecho\Db\Exception $e) {
+                                echo '1970-01-01';
+                            } ?>
                         </p>
                     </li>
                 <?php endif ?>

@@ -4,6 +4,11 @@
  *
  * @package custom
  */
+
+use Freewind\Core\Article;
+use Freewind\Widget\ArticleWidget;
+use Typecho\Plugin;
+
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('include/header.php');
 ?>
@@ -34,11 +39,15 @@ $this->need('include/header.php');
                 ), '', ''); ?></strong>
         </div>
         <div style="margin:10px 20px;">
-            <?php Typecho_Plugin::factory('freewind')->contentTop($this); ?>
+            <?php Plugin::factory('freewind')->contentTop($this); ?>
         </div>
         <div class="blog-list" style="padding: 0 20px;">
-            <?php $photo_widget = new Article_Widget($this, 3); ?>
-            <?php $picture = $photo_widget->articles(); ?>
+            <?php $photoWidget = new ArticleWidget($this, 3); ?>
+            <?php try {
+                $picture = $photoWidget->articles();
+            } catch (\Typecho\Db\Exception $e) {
+                $picture = [];
+            } ?>
             <?php while ($picture->next()): ?>
                 <div class="blog-item bottom-shadow">
                     <div class="shuo-title pos-rlt">
@@ -52,16 +61,17 @@ $this->need('include/header.php');
                             <p class="time"><?php $picture->date('Y-m-d H:i:s'); ?></p>
                         </div>
                     </div>
-                    <?php $photo_infos = Freewind_Article::photos_index($picture, 4) ?>
+                    <?php $photo_infos = Article::photosIndex($picture, 4) ?>
                     <?php $index = 0 ?>
                     <div class="photo-list">
-                        <?php $index = 0; ?>
                         <?php foreach ($photo_infos['photos'] as $photo): ?>
                             <?php if ($index++ < 3): ?>
-                                <img class="lw-shuo-img lazy" src="<?php echo $photo['src'] ?>" style="margin-bottom: 5px;"
+                                <img class="lw-shuo-img lazy" src="<?php echo $photo['src'] ?>"
+                                     style="margin-bottom: 5px;<?php echo $photo['style'] ?: '' ?>"
                                      data-caption="<?php echo $photo['caption'] ?>" alt="">
                             <?php else: ?>
-                                <a class="img-more" href="<?php echo $picture->permalink ?>" style="margin-bottom: 5px;vertical-align: top">
+                                <a class="img-more" href="<?php echo $picture->permalink ?>"
+                                   style="margin-bottom: 5px;vertical-align: top">
                                     <div class="bg-more"><span>+<?php echo $photo_infos['count'] - 4 ?></span></div>
                                     <img class="lazy" src="<?php echo $photo['src'] ?>"
                                          data-caption="<?php echo $photo['caption'] ?>" alt="">
@@ -69,7 +79,8 @@ $this->need('include/header.php');
                             <?php endif; ?>
                         <?php endforeach; ?>
                         <?php if ($this->password) : ?>
-                            <p><i class="iconfont icon-mimasuolock"></i>该相册为私密相册，<a href="<?php echo $picture->permalink ?>">输入密码查看<i
+                            <p><i class="iconfont icon-mimasuolock"></i>该相册为私密相册，<a
+                                        href="<?php echo $picture->permalink ?>">输入密码查看<i
                                             style="margin-left: 5px;" class="fa fa-angle-double-right"></i></a></p>
                         <?php else: ?>
                             <p>共<?php echo $photo_infos['count'] ?>张照片，<a href="<?php echo $picture->permalink ?>">查看全部<i
@@ -79,6 +90,9 @@ $this->need('include/header.php');
                 </div>
             <?php endwhile; ?>
         </div>
-        <?php $photo_widget->pageNav(); ?>
+        <?php try {
+            $photoWidget->pageNav();
+        } catch (\Typecho\Db\Exception $e) {
+        } ?>
     </div>
 <?php $this->need('include/footer.php'); ?>

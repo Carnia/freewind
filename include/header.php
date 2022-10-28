@@ -1,4 +1,11 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php use Freewind\Core\Article;
+use Freewind\Core\FreewindHelper;
+use Freewind\Core\Site;
+use Freewind\Extend\IExtend;
+use Freewind\Extend\NavigationExtend;
+use Utils\Helper;
+
+if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,67 +23,64 @@
             'author' => _t('%s 发布的文章')
         ), '', ' - '); ?><?php $this->options->title(); ?></title>
     <?php if ($this->is('single')) : ?>
-        <meta name="keywords" content="<?php echo Freewind_Article::keywords($this) ?>"/>
-        <meta name="description" content="<?php echo Freewind_Article::summery($this, 200) ?>"/>
+        <meta name="keywords" content="<?php echo Article::keywords($this) ?>"/>
+        <meta name="description" content="<?php echo Article::summery($this, 200) ?>"/>
         <?php $this->header('keywords=&description='); ?>
     <?php else : ?>
         <?php $this->header(); ?>
     <?php endif; ?>
+    <link rel="icon" href="<?php echo Site::get(Site::NAME_SITE_FAVICON) ?>" type="image/x-icon">
     <!-- jquery相关 -->
     <!-- jquery的时代已经过去了，freewind现在还在jquery的余晖下残存 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/jquery/jquery-3.5.1.min.js') ?>"></script>
     <!-- jquery 页面pjax -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/jquery/jquery.pjax.min.js') ?>"></script>
     <!-- jquery 图片延迟加载 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"></script>
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/jquery/jquery.lazyload.min.js') ?>"></script>
     <!-- font-awesome -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="<?php echo FreewindHelper::freeCdn('plugin/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet">
     <!-- bootstrap -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <!-- 阿里图标库 -->
-    <link rel="stylesheet" href="//at.alicdn.com/t/font_2416373_qj7t1m32fee.css">
-    <!-- 阿里图标库经常挂，这里做本地备份 -->
-    <!-- <link rel="stylesheet" href="<?php $this->options->themeUrl('static/css/font/font_2416373_qj7t1m32fee.css'); ?>"> -->
+    <link href="<?php echo FreewindHelper::freeCdn('plugin/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/bootstrap/js/bootstrap.min.js') ?>"></script>
     <!-- tocbot 文章目录生成 -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/tocbot/4.13.0/tocbot.min.css" rel="stylesheet">
-    <script src="https://cdn.bootcdn.net/ajax/libs/tocbot/4.13.0/tocbot.min.js"></script>
+    <link href="<?php echo FreewindHelper::freeCdn('plugin/tocbot/tocbot.min.css') ?>" rel="stylesheet">
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/tocbot/tocbot.min.js') ?>"></script>
     <!-- 图片预览 -->
-    <link rel="stylesheet" href="<?php echo Freewind_Helper::freeCdn('plugin/previewjs/preview.css') ?>">
-    <script src="<?php echo Freewind_Helper::freeCdn('plugin/previewjs/preview.min.js') ?>"></script>
+    <link rel="stylesheet" href="<?php echo FreewindHelper::freeCdn('plugin/previewjs/preview.min.css') ?>">
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/previewjs/preview.min.js') ?>"></script>
     <!-- 自定义右键 -->
-    <link rel="stylesheet" href="<?php echo Freewind_Helper::freeCdn('plugin/menu/contextMenu.min.css') ?>">
-    <script src="<?php echo Freewind_Helper::freeCdn('plugin/menu/jquery.contextMenu.min.js') ?>"></script>
+    <link rel="stylesheet" href="<?php echo FreewindHelper::freeCdn('plugin/menu/contextMenu.min.css') ?>">
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/menu/jquery.contextMenu.min.js') ?>"></script>
     <!-- 代码高亮 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
-    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.2.0/styles/a11y-light.min.css" rel="stylesheet">
+    <link href="<?php echo FreewindHelper::freeCdn('plugin/highlight/styles/' . Site::get(Site::NAME_SITE_CODE_STYLE)) ?>"
+          rel="stylesheet">
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/highlight/highlight.min.js') ?>"></script>
     <!-- 轮播图 -->
-    <link rel="stylesheet" href="<?php echo Freewind_Helper::freeCdn('plugin/slider/swiper-bundle.min.css'); ?>">
-    <script src="<?php echo Freewind_Helper::freeCdn('plugin/slider/swiper-bundle.min.js'); ?>"></script>
+    <link rel="stylesheet" href="<?php echo FreewindHelper::freeCdn('plugin/slider/swiper-bundle.min.css') ?>">
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/slider/swiper-bundle.min.js') ?>"></script>
     <!-- echart报表 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.0.1/echarts.min.js"></script>
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/echarts/echarts.min.js') ?>"></script>
     <!-- 加载条 -->
-    <script src="<?php echo Freewind_Helper::freeCdn('plugin/nprogress/nprogress.min.js') ?>"></script>
-    <link href="<?php echo Freewind_Helper::freeCdn('plugin/nprogress/nprogress.min.css') ?>" rel="stylesheet"
+    <link href="<?php echo FreewindHelper::freeCdn('plugin/nprogress/nprogress.min.css') ?>" rel="stylesheet"
           type="text/css">
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/nprogress/nprogress.min.js') ?>"></script>
     <!-- wangEditor编辑器 -->
-    <script src="<?php echo Freewind_Helper::freeCdn('plugin/wangEdit/wangEditor.min.js') ?>"></script>
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/wangEdit/wangEditor.min.js') ?>"></script>
     <!-- 一个好看的弹窗组件 -->
-    <script src="<?php echo Freewind_Helper::freeCdn('plugin/message/coco-message.min.js') ?>"></script>
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/message/coco-message.min.js') ?>"></script>
     <!-- 内容到剪切板 -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/1.7.1/clipboard.js"></script>
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/clipboard/clipboard.js') ?>"></script>
     <!-- 播放器 -->
-    <link rel="stylesheet" href="<?php echo Freewind_Helper::freeCdn('plugin/aplayer/APlayer.css') ?>">
-    <script src="<?php echo Freewind_Helper::freeCdn('plugin/aplayer/APlayer.js'); ?>"></script>
-    <script src="<?php echo Freewind_Helper::freeCdn('plugin/aplayer/Meting.js'); ?>"></script>
+    <link rel="stylesheet" href="<?php echo FreewindHelper::freeCdn('plugin/aplayer/APlayer.css') ?>">
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/aplayer/APlayer.js') ?>"></script>
+    <script src="<?php echo FreewindHelper::freeCdn('plugin/aplayer/Meting.min.js') ?>"></script>
     <!-- freewind静态资源 -->
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('static/css/style.css'); ?>">
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('static/css/right.css'); ?>">
+    <link rel="stylesheet" href="<?php Helper::options()->themeUrl('static/css/style.css') ?>">
+    <link rel="stylesheet" href="<?php Helper::options()->themeUrl('static/css/right.css') ?>">
     <link rel="stylesheet"
-          href="<?php $this->options->themeUrl('static/css/color/' . Freewind_Helper::theme_color()) ?>">
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('static/css/single.css'); ?>">
+          href="<?php Helper::options()->themeUrl('static/css/color/' . FreewindHelper::themeColor()) ?>">
     <style>
-        <?php if ($this->options->freeAllowBg==1): ?>
+        <?php if (Site::get(Site::NAME_PIC_BG_IMG_ALLOW)==Site::ENABLE): ?>
         #swiper-slider,
         #app-header,
         #app-aside,
@@ -104,21 +108,21 @@
         .crumbs,
         .right-bar,
         .main-header {
-            opacity: <?php echo (doubleval($this->options->freeBgOpcity)/100)<0.3?0.3:(doubleval($this->options->freeBgOpcity)/100) ?>;
+            opacity: <?php echo (doubleval(Site::get(Site::NAME_PIC_BG_OPCITY))/100)<0.3?0.3:(doubleval(Site::get(Site::NAME_PIC_BG_OPCITY))/100) ?>;
         }
 
         #body {
-            background-image: url('<?php echo $this->options->freeBgurl?>');
+            background-image: url('<?php echo Site::get(Site::NAME_PIC_BG_IMG)?>');
             background-position: center center;
-            background-repeat: <?php echo $this->options->freeRepeat?>;
+            background-repeat: <?php echo Site::get(Site::NAME_PIC_BG_REPEAT)?>;
             background-attachment: fixed;
-        <?php if ($this->options->freeRepeat == 'no-repeat'):?> background-size: cover;
+        <?php if (Site::get(Site::NAME_PIC_BG_REPEAT) == Site::REPEAT_NO):?> background-size: cover;
         <?php endif; ?> background-color: #464646;
         }
 
         <?php else: ?>
         #body {
-            background-color: <?php echo $this->options->freeBgColor ?>;
+            background-color: <?php echo Site::get(Site::NAME_PIC_BG_COLOR) ?>;
         }
 
         <?php endif; ?>
@@ -130,28 +134,29 @@
 
         @font-face {
             font-family: LogoFont;
-            src: url("<?php echo  Freewind_Helper::freeCdn('font/bunch-bonarie.ttf')?>");
+            src: url("<?php echo FreewindHelper::freeCdn('font/bunch-bonarie.ttf')?>");
         }
 
 
     </style>
-    <?php $this->options->freeCss() ?>
+    <?php echo Site::get(Site::NAME_DEP_GLOBAL_CSS) ?>
+    <?php $this->fields->css() ?>
 </head>
 <body id="body">
 <div id="theme-url" data-theme="<?php Helper::options()->themeUrl('') ?>" style="display: none"></div>
-<div id="cdn-url" data-cdn="<?php echo Freewind_Helper::freeCdn() ?>" style="display: none"></div>
+<div id="cdn-url" data-cdn="<?php echo FreewindHelper::freeCdn() ?>" style="display: none"></div>
 <div id="site-url" data-url="<?php $this->options->siteUrl(); ?>" style="display: none"></div>
 <div id="app" class="container zoomImgBox">
     <header id="app-header" class="bg-top">
         <!--左边栏和顶栏交集区域-->
         <div class="sidebar-header bg-left pos-rlt">
             <a href="javascript:void(0);" id="show-left-bar" class="pos-abs hide-lg show-left"><i
-                        class="iconfont icon-gongneng"></i></a>
+                        class="fa fa-bars"></i></a>
             <a class="header-logo" href="<?php $this->options->siteUrl(); ?>">
-                <span class="free-logo"><?php echo $this->options->freeIcon ?: 'freewind' ?></span>
+                <span class="free-logo"><?php echo Site::get(Site::NAME_SITE_TEXT_LOGO) ?: 'freewind' ?></span>
             </a>
             <a href="javascript:void(0);" id="show-search-sm" class="pos-abs hide-lg show-search"><i
-                        class="iconfont icon-search1"></i></a>
+                        class="fa fa-search"></i></a>
         </div>
         <!--顶部导航-->
         <div class="top-bar pos-rlt">
@@ -159,8 +164,8 @@
             <ul class="top-list fl hide-md pos-rlt">
                 <li>
                     <a href="javascript:void (0);" id="app-statistic">
-                        <i class="iconfont icon-tradingvolume"></i>
-                        <i class="iconfont icon-down"></i>
+                        <i class="fa fa-bar-chart"></i>
+                        <i class="fa fa-caret-down"></i>
                     </a>
                 </li>
             </ul>
@@ -168,14 +173,14 @@
             <div class="search-header">
                 <div class="float-content">
                     <a id="show-search-btn" class="fl" href="javascript:void(0)">请输入关键字进行搜索...</a>
-                    <button class="search-btn fl"><i class="iconfont icon-search"></i></button>
+                    <button class="search-btn fl"><i class="fa fa-search"></i></button>
                 </div>
             </div>
             <!--介绍登录-->
             <ul class="top-list fr hide-sm">
                 <li>
                     <a id="whisper-btn" href="javascript:void (0);">
-                        <i class="iconfont icon-jieshao"></i>
+                        <i class="fa fa-bookmark-o"></i>
                     </a>
                 </li>
                 <li>
@@ -185,7 +190,7 @@
                         </a>
                     <?php else: ?>
                         <a id="login-bar-btn" href="javascript:void (0);">
-                            <i class="iconfont icon-denglulogin11"></i>
+                            <i class="fa fa-sign-in"></i>
                         </a>
                     <?php endif; ?>
                 </li>
@@ -196,7 +201,7 @@
         <div class="website-info">
             <div class="website-avatar pos-rlt">
                 <div class="avatar-border">
-                    <img src="<?php echo $this->options->freeAvatar ?: 'https://imagebed-1252410096.cos.ap-nanjing.myqcloud.com/20210323/afd125bc8747404f9847b7b014fa0740.jpg' ?>"
+                    <img src="<?php echo Site::get(Site::NAME_MASTER_AVATAR) ?>"
                          alt="">
                 </div>
                 <svg t="1615984869803" class="icon" viewBox="0 0 1024 1024" version="1.1"
@@ -226,7 +231,7 @@
                 </svg>
             </div>
             <div class="website-title">
-                <h1><?php echo $this->options->freeNickname ?></h1>
+                <h1><?php echo Site::get(Site::NAME_MASTER_NICKNAME) ?></h1>
             </div>
             <div class="website-count">
                 <table>
@@ -238,7 +243,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $statistics = Freewind_Article::get_statistics() ?>
+                    <?php $statistics = Article::get_statistics() ?>
                     <tr>
                         <td><?php echo $statistics['contents'] ?></td>
                         <td><?php echo $statistics['category'] ?></td>
@@ -251,25 +256,26 @@
         <div class="nav-list">
             <ul>
                 <li class="nav-title">导航</li>
-                <li>
+                <li class="fw-nav-item">
                     <a href="<?php $this->options->siteUrl(); ?>" <?php echo $this->is('index') ? ' class="nav-active"' : '' ?>><i
-                                class="iconfont icon-home"></i>首页</a>
+                                class="fa fa-home"></i> 首页</a>
                 </li>
-                <?php $this->widget('Widget_Contents_Page_List')->to($pages); ?>
-                <?php while ($pages->next()): ?>
-                    <?php if ($pages->fields->visible == 1): ?>
-                        <li>
-                            <a href="<?php $pages->permalink() ?>" <?php echo $this->cid == $pages->cid ? ' class="nav-active"' : '' ?>>
-                                <i class="iconfont <?php $pages->fields->icon() ?>"></i><?php $pages->title() ?>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                <?php endwhile; ?>
+                <?php $navs = IExtend::lst(NavigationExtend::TABLE_NAME, NavigationExtend::CACHE_PREFIX, ['status' => NavigationExtend::STATUS_ENABLE, 'type' => NavigationExtend::TYPE_NAVIGATION], 'ordered') ?>
+                <?php foreach ($navs as $nav): ?>
+                    <li class="fw-nav-item">
+                        <a <?php echo (!$this->is('post') && strpos($_SERVER['REQUEST_URI'], $nav['url']) > -1) ? ' class="nav-active"' : '' ?>
+                                href="<?php echo strpos($nav['url'], 'http') == 0 ? $this->options->siteUrl() . (strpos('/', $nav['url']) == 0 ? substr($nav['url'], 1) : $nav['url']) : $nav['url'] ?>"
+                            <?php echo $nav['target'] == NavigationExtend::TARGET_NEW ? ' target="_blank"' : '' ?>>
+                            <i class="fa <?php echo $nav['icon'] ?>"></i>
+                            <?php echo $nav['name'] ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
                 <li class="nav-title">组成</li>
                 <li>
                     <a href="javascript:void (0)" data-target="nav-1"><i
-                                class="iconfont icon-folder"></i>分类</a>
-                    <i class="iconfont icon-angle-right pos-abs nav-right"></i>
+                                class="fa fa-folder"></i>分类</a>
+                    <i class="fa fa-angle-right pos-abs nav-right"></i>
                     <ul id="nav-1" class="child-nav-list">
                         <?php $this->widget('Widget_Metas_Category_List')->to($category); ?>
                         <?php while ($category->next()) : ?>
@@ -286,7 +292,7 @@
                                         <a href="javascript:void (0)" data-target="child-<?php echo $ulid ?>">
                                             <?php $category->name(); ?>
                                         </a>
-                                        <i class="nav-right iconfont pos-abs icon-angle-down"></i>
+                                        <i class="nav-right fa pos-abs fa-angle-down"></i>
                                         <ul id="child-<?php echo $ulid ?>" class="child-nav-list">
                                             <?php foreach ($children as $mid) : ?>
                                                 <?php $child = $category->getCategory($mid); ?>
@@ -303,18 +309,16 @@
                 </li>
                 <li>
                     <a href="javascript:void (0)" data-target="nav-page"><i
-                                class="iconfont icon-page"></i>页面</a>
-                    <i class="iconfont icon-angle-right pos-abs nav-right"></i>
+                                class="fa fa-file-text-o"></i>页面</a>
+                    <i class="fa fa-angle-right pos-abs nav-right"></i>
                     <ul id="nav-page" class="child-nav-list">
-                        <?php
-                        $navs = json_decode($this->options->freeNavList);
-                        $navs = array_filter($navs, function ($nav) {
-                            return $nav->name;
-                        });
-                        ?>
-                        <?php foreach ($navs as $nav): ?>
+                        <?php $pages = IExtend::lst(NavigationExtend::TABLE_NAME, NavigationExtend::CACHE_PREFIX, ['status' => NavigationExtend::STATUS_ENABLE, 'type' => NavigationExtend::TYPE_PAGE], 'ordered') ?>
+                        <?php foreach ($pages as $page): ?>
                             <li>
-                                <a href="<?php echo $nav->url ?>" <?php echo $nav->target ? ' target="_blank"' : '' ?>><?php echo $nav->name ?></a>
+                                <a href="<?php echo strpos($page['url'], 'http') == 0 ? $this->options->siteUrl() . (strpos('/', $page['url']) == 0 ? substr($page['url'], 1) : $page['url']) : $page['url'] ?>"
+                                    <?php echo $page['target'] == NavigationExtend::TARGET_NEW ? ' target="_blank"' : '' ?>>
+                                    <?php echo $page['name'] ?>
+                                </a>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -324,17 +328,22 @@
         <div class="user-footer">
             <div class="link-me">
                 <b>联系我</b>
-                <a target="_blank"
-                   href="http://wpa.qq.com/msgrd?v=3&amp;uin=<?php echo $this->options->freeLinkQQ; ?>&amp;site=qq&amp;menu=yes"><i
-                            class="fa fa-qq"></i></a>
-                <a href="<?php echo $this->options->freeLinkMail; ?>" target="_blank"><i
-                            class="fa fa-envelope"></i></a>
-                <a target="_blank" href="<?php echo $this->options->freeLinkSina; ?>"><i class="fa fa-weibo"></i></a>
-                <a target="_blank" href="<?php echo $this->options->freeLinkGithub; ?>"><i class="fa fa-github"></i></a>
+                <a target="_blank" href="<?php echo Site::get(Site::NAME_MASTER_ICON_VALUE1) ?>">
+                    <i class="fa <?php echo Site::get(Site::NAME_MASTER_ICON1) ?>"></i>
+                </a>
+                <a href="<?php echo Site::get(Site::NAME_MASTER_ICON_VALUE2) ?>" target="_blank">
+                    <i class="fa <?php echo Site::get(Site::NAME_MASTER_ICON2) ?>"></i>
+                </a>
+                <a target="_blank" href="<?php echo Site::get(Site::NAME_MASTER_ICON_VALUE3) ?>">
+                    <i class="fa <?php echo Site::get(Site::NAME_MASTER_ICON3) ?>"></i>
+                </a>
+                <a target="_blank" href="<?php echo Site::get(Site::NAME_MASTER_ICON_VALUE4) ?>">
+                    <i class="fa <?php echo Site::get(Site::NAME_MASTER_ICON4) ?>"></i>
+                </a>
             </div>
             <div class="copy-right">
                 <div>
-                    <?php if ($this->options->freeRight == 1): ?>
+                    <?php if (Site::get(Site::NAME_SITE_INFO_ALLOW) == Site::ENABLE): ?>
                         the theme is by <a href="https://www.kevinlu98.cn" target="_blank">@冷文学习者</a>
                     <?php else: ?>
                         this blog is by <a
@@ -357,13 +366,14 @@
                 <div id="whisper-pain" class="pos-fix bg-white shadow row no-marge fade-toggle">
                     <h3>站点介绍</h3>
                     <div class="whisper-content">
-                        <?php echo $this->options->freeNotice ?: '此处是站点介绍' ?>
+                        <?php echo Site::get(Site::NAME_SITE_NOTICE) ?: '此处是站点介绍' ?>
                     </div>
                 </div>
                 <div id="login-pain" class="pos-fix bg-white shadow row no-marge fade-toggle">
                     <?php if ($this->user->hasLogin()): ?>
                         <ul class="user-center">
-                            <li><a target="_blank" href="<?php echo $this->options->siteUrl . 'admin/' ?>">个人中心</a></li>
+                            <li><a target="_blank" href="<?php echo $this->options->siteUrl . 'admin/' ?>">个人中心</a>
+                            </li>
                             <li><a href="<?php $this->options->logoutUrl(); ?>" no-pjax="">退出登录</a></li>
                         </ul>
                     <?php else: ?>
@@ -374,11 +384,11 @@
                                   name="login" role="form">
                                 <div class="input-item pos-rlt">
                                     <input type="text" name="name" placeholder="请输入用户名">
-                                    <i class="iconfont icon-wodemy pos-abs"></i>
+                                    <i class="fa fa-user pos-abs"></i>
                                 </div>
                                 <div class="input-item pos-rlt">
                                     <input type="password" name="password" placeholder="请输入密码">
-                                    <i class="iconfont icon-mimasuolock pos-abs"></i>
+                                    <i class="fa fa-lock pos-abs"></i>
                                 </div>
                                 <div class="login-btn-list">
                                     <button class="fr right-btn" type="submit">登录</button>
@@ -394,33 +404,34 @@
                                 <?php if ($this->options->allowRegister): ?>
                                     <div class="input-item pos-rlt">
                                         <input type="text" name="name" placeholder="请输入用户名">
-                                        <i class="iconfont icon-wodemy pos-abs"></i>
+                                        <i class="fa fa-user pos-abs"></i>
                                     </div>
                                     <div class="input-item pos-rlt">
                                         <input type="text" name="screenName" placeholder="请输入昵称">
-                                        <i class="iconfont icon-NameCard pos-abs"></i>
+                                        <i class="fa fa-id-card pos-abs"></i>
                                     </div>
                                     <div class="input-item pos-rlt">
                                         <input type="text" name="mail" placeholder="请输入邮箱">
-                                        <i class="iconfont icon-youxiang pos-abs"></i>
+                                        <i class="fa fa-envelope pos-abs"></i>
                                     </div>
                                     <div class="input-item pos-rlt">
                                         <input type="password" id="password" name="password" placeholder="请输入密码">
-                                        <i class="iconfont icon-wodemy pos-abs"></i>
+                                        <i class="fa fa-lock pos-abs"></i>
                                     </div>
                                     <div class="input-item pos-rlt">
                                         <input type="password" name="confirm" placeholder="确认密码">
-                                        <i class="iconfont icon-wodemy pos-abs"></i>
+                                        <i class="fa fa-lock pos-abs"></i>
                                     </div>
                                     <div class="input-item pos-rlt">
                                         <input type="text" name="imgcode" placeholder="验证码">
-                                        <i class="iconfont icon-success pos-abs"></i>
+                                        <i class="fa fa-code pos-abs"></i>
                                         <img class="code pos-abs" id="code-img"
                                              src="<?php echo $this->options->siteUrl . 'verify/code'; ?>"
                                              alt="">
                                     </div>
                                 <?php else: ?>
-                                    <h3 style="font-weight: 100;font-size: 18px;text-align: center">该站点关闭了注册功能</h3>
+                                    <h3 style="font-weight: 100;font-size: 18px;text-align: center">
+                                        该站点关闭了注册功能</h3>
                                 <?php endif; ?>
                                 <div class="login-btn-list">
                                     <button class="fr right-btn" type="submit">注册</button>

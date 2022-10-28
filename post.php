@@ -1,11 +1,16 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php use Freewind\Core\Article;
+use Freewind\Core\Site;
+use Typecho\Plugin;
+
+if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('include/header.php'); ?>
 <?php if ($this->password && !($_POST['passwd'] && $_POST['passwd'] == $this->password)) : ?>
     <?php $msg = '访问密码错误' ?>
     <div style="width: 100vw;height: 100vh;position:fixed;top: 0;left: 0;z-index: 9999999;background-color:#292E32;">
         <div style="text-align: center;padding: 5px;background-color: #FE445C;color: #fff;"><?php echo $msg ?></div>
         <div style="margin-top: 200px;text-align: center">
-            <img style="border-radius: 50%;width: 128px;height: 128px;" src="<?php $this->options->freeAvatar() ?>"
+            <img style="border-radius: 50%;width: 128px;height: 128px;"
+                 src="<?php echo Site::get(Site::NAME_MASTER_AVATAR) ?>"
                  alt="">
             <h1 style="color: #fff;font-size: 18px"><?php $this->title() ?></h1>
             <form action="" method="post">
@@ -20,22 +25,19 @@
         </div>
     </div>
 <?php else: ?>
-    <?php
-    if ($_GET['download'] && $_GET['download'] == $this->fields->postFileName) {
-        ob_clean();
-        $this->need('include/download.php');
-        exit();
-    }
-    ?>
     <div class="bg-white main-header">
         <h1 class="no-marge"><?php $this->title() ?></h1>
         <p class="blog-info no-marge">
-            <i class="iconfont icon-user1"> <?php $this->author(); ?></i>
-            <i class="iconfont icon-clock1"> <?php $this->date('Y-m-d'); ?></i>
-            <i class="iconfont icon-eye"> <?php echo Freewind_Article::views($this) ?></i>
-            <i class="iconfont icon-comment1"> <?php $this->commentsNum('%d条评论'); ?></i>
-            <i class="iconfont icon-folder"> <?php $this->category(''); ?></i>
-            <i class="iconfont icon-tags-o"><?php $this->tags(""); ?></i>
+            <i class="fa fa-user"> <?php $this->author(); ?></i>
+            <i class="fa fa-clock-o"> <?php $this->date('Y-m-d'); ?></i>
+            <i class="fa fa-eye"> <?php try {
+                    echo Article::views($this);
+                } catch (\Typecho\Db\Exception $e) {
+                    echo 0;
+                } ?></i>
+            <i class="fa fa-comment"> <?php $this->commentsNum('%d条评论'); ?></i>
+            <i class="fa fa-folder"> <?php $this->category(''); ?></i>
+            <i class="fa fa-tags"><?php $this->tags(""); ?></i>
         </p>
     </div>
     <div class="blog-content">
@@ -45,38 +47,39 @@
             <strong>正文</strong>
         </div>
         <div style="margin:10px 20px;">
-            <?php Typecho_Plugin::factory('freewind')->contentTop($this); ?>
+            <?php Plugin::factory('freewind')->contentTop($this); ?>
         </div>
         <?php if ($this->fields->postType == 2): ?>
             <div id="shuo-content" class="bottom-shadow">
-                <?php echo Freewind_Article::_content($this) ?>
-                <?php if ($this->fields->postShuoType == 2): ?>
+                <?php echo $this->content ?>
+                <?php foreach (Article::shuo_pic_list($this) as $picture): ?>
+                    <img class="lw-shuo-img lazy" data-original="<?php echo $picture ?>" alt="" src="">
+                <?php endforeach; ?>
+                <?php if ($this->fields->postShuoMusic): ?>
                     <meting-js
                             list-folded="true"
                             server="<?php echo $this->fields->postShuoMP ?>"
                             type="<?php echo $this->fields->postShuoMT ?>"
                             id="<?php echo $this->fields->postShuoMusic ?>">
                     </meting-js>
-                <?php elseif ($this->fields->postShuoType == 3): ?>
-                    <iframe class="fwbili" src="//player.bilibili.com/player.html?bvid=<?php echo $this->fields->postShuoBvid ?>&page=<?php echo $this->fields->postShuoPage ?>"></iframe>
-                <?php else: ?>
-                    <?php foreach (Freewind_Article::shuo_pic_list($this) as $picture): ?>
-                        <img class="lw-shuo-img lazy" data-original="<?php echo $picture ?>" alt="" src="">
-                    <?php endforeach; ?>
+                <?php endif; ?>
+                <?php if ($this->fields->postShuoBvid): ?>
+                    <iframe class="fwbili"
+                            src="//player.bilibili.com/player.html?bvid=<?php echo $this->fields->postShuoBvid ?>&page=<?php echo $this->fields->postShuoPage ?>"></iframe>
                 <?php endif; ?>
             </div>
         <?php elseif ($this->fields->postType == 3): ?>
             <div id="shuo-content" class="bottom-shadow">
-                <?php $photos = Freewind_Article::_content($this) ?>
+                <?php $photos = Article::photoList($this) ?>
                 <?php foreach ($photos as $photo): ?>
                     <img class="lw-shuo-img lazy" data-original="<?php echo $photo['src'] ?>"
                          style="margin-bottom: 10px;margin-right: 0;"
-                         data-caption="<?php echo $photo['caption'] ?>" alt="">
+                         data-caption="<?php echo $photo['caption'] ?>" alt="" src="">
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
             <div id="write" class="bottom-shadow">
-                <?php echo Freewind_Article::_content($this) ?>
+                <?php echo $this->content ?>
             </div>
             <?php $this->need('include/file.php'); ?>
             <div class="blog-copyright bottom-shadow">
@@ -122,7 +125,8 @@
                         <path d="M512 96c229.76 0 416 186.24 416 416S741.76 928 512 928 96 741.76 96 512 282.24 96 512 96z m0 64C317.589333 160 160 317.589333 160 512S317.589333 864 512 864 864 706.410667 864 512 706.410667 160 512 160z m10.666667 170.666667c51.882667 0 100.522667 20.736 136.234666 56.704l4.586667 4.778666-46.933333 43.52a128 128 0 1 0-4.096 178.24l4.096-4.245333 46.933333 43.52A192 192 0 1 1 522.666667 330.666667z"
                               fill="#3AB549" p-id="40937"></path>
                     </svg>
-                    协议授权: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">《署名-非商业性使用-相同方式共享 4.0 国际
+                    协议授权: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">《署名-非商业性使用-相同方式共享
+                        4.0 国际
                         (CC BY-NC-SA 4.0)》</a>
                 </div>
             </div>

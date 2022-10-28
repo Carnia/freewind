@@ -4,6 +4,11 @@
  *
  * @package custom
  */
+
+use Freewind\Core\Site;
+use Freewind\Extend\LinkedExtend;
+use Typecho\Plugin;
+
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('include/header.php');
 ?>
@@ -34,17 +39,15 @@ $this->need('include/header.php');
             ), '', ''); ?></strong>
     </div>
     <div style="margin:10px 20px;">
-        <?php Typecho_Plugin::factory('freewind')->contentTop($this); ?>
+        <?php Plugin::factory('freewind')->contentTop($this); ?>
     </div>
     <div id="write" class="bottom-shadow">
-        <?php echo Freewind_Article::_content($this)?>
+        <?php echo $this->content ?>
     </div>
     <div class="bg-whitefff page-link bottom-shadow">
         <?php
-        $links = json_decode($this->options->freeLinkList);
-        $links = array_filter($links, function ($link) {
-            return $link->name;
-        });
+        $links = LinkedExtend::lst(LinkedExtend::TABLE_NAME, LinkedExtend::CACHE_PREFIX, [], '');
+        shuffle($links)
         ?>
         <?php if (count($links) > 0): ?>
             <div class="row" style="margin: 0;padding: 10px;">
@@ -53,16 +56,16 @@ $this->need('include/header.php');
                         <div class="link-item bottom-shadow">
                             <div class="link-head">
                                 <div class="link-bg-img"
-                                     style="background-image:url(<?php echo $link->icon ?: $link->link . '/favicon.ico' ?>);"></div>
+                                     style="background-image:url(<?php echo $link['icon'] ?: $link['link'] . '/favicon.ico' ?>);"></div>
                             </div>
                             <div class="link-body pos-rlt">
-                                <div class="link-img pos-abs" onclick="window.open('<?php echo $link->link ?>')">
+                                <div class="link-img pos-abs" onclick="window.open('<?php echo $link['link'] ?>')">
                                     <img class="lazy"
-                                         data-original="<?php echo $link->icon ?: $link->link . '/favicon.ico' ?>"
+                                         data-original="<?php echo $link['icon'] ?: $link['link'] . '/favicon.ico' ?>"
                                          alt="" src="">
                                 </div>
-                                <h3 onclick="window.open('<?php echo $link->link ?>')"><?php echo $link->name ?></h3>
-                                <p><?php echo $link->desc ?: $this->options->freeLinkDesc ?></p>
+                                <h3 onclick="window.open('<?php echo $link['link'] ?>')"><?php echo $link['name'] ?></h3>
+                                <p><?php echo $link['desc'] ?: Site::get(Site::NAME_LINKED_DESC) ?></p>
                             </div>
                         </div>
                     </div>
@@ -76,8 +79,4 @@ $this->need('include/header.php');
 </div>
 
 <?php $this->need('include/footer.php'); ?>
-<script>
-    $(function () {
 
-    })
-</script>

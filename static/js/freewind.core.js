@@ -3,8 +3,8 @@ $(function () {
         $(".nav-list>ul>li>a").removeClass('nav-active')
         $(this).addClass('nav-active')
         let navRight = $(".nav-list .nav-right")
-        navRight.removeClass('icon-angle-down').addClass('icon-angle-right')
-        $(this).next('.nav-right').removeClass('icon-angle-right').addClass('icon-angle-down')
+        navRight.removeClass('fa-angle-down').addClass('fa-angle-right')
+        $(this).next('.nav-right').removeClass('fa-angle-right').addClass('fa-angle-down')
         let target = $(this).data('target')
         let targetEle = $(`#${target}`)
         if (targetEle.css('display') === 'none') {
@@ -12,7 +12,7 @@ $(function () {
             targetEle.fadeIn()
         } else {
             $(".nav-list .child-nav-list").fadeOut()
-            navRight.removeClass('icon-angle-down').addClass('icon-angle-right')
+            navRight.removeClass('fa-angle-down').addClass('fa-angle-right')
             $(this).removeClass('nav-active')
             $('.nav-list .child-nav-list .child-active').removeClass('child-active')
         }
@@ -25,8 +25,8 @@ $(function () {
     $(".nav-list .child-nav-list li>a").on('click', function () {
         $(".nav-list .child-nav-list li>a").removeClass('child-active')
         $(this).addClass('child-active')
-        $(".nav-list .child-nav-list .nav-right").removeClass('icon-angle-down').addClass('icon-angle-right')
-        $(this).next('.nav-right').removeClass('icon-angle-right').addClass('icon-angle-down')
+        $(".nav-list .child-nav-list .nav-right").removeClass('fa-angle-down').addClass('fa-angle-right')
+        $(this).next('.nav-right').removeClass('fa-angle-right').addClass('fa-angle-down')
         let target = $(this).data('target')
         let targetEle = $(`#${target}`)
         let other = $(this).parent().parent().children('li').children('.child-nav-list');
@@ -35,7 +35,7 @@ $(function () {
             targetEle.fadeIn()
         } else {
             other.fadeOut()
-            $(this).next(".nav-right").removeClass('icon-angle-down').addClass('icon-angle-right')
+            $(this).next(".nav-right").removeClass('fa-angle-down').addClass('fa-angle-right')
             $(this).removeClass('child-active')
 
         }

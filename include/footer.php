@@ -1,33 +1,39 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php
+
+use Freewind\Core\Article;
+use Freewind\Core\Avatar;
+use Freewind\Core\FreewindHelper;
+use Freewind\Core\Site;
+use Freewind\Extend\IExtend;
+use Freewind\Extend\LinkedExtend;
+use Freewind\Extend\RightExtend;
+use Typecho\Plugin;
+use Typecho\Widget;
+use Utils\Helper;
+
+if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <footer id="app-footer">
-    友情链接:
-    <?php
-    $links = json_decode($this->options->freeLinkList);
-    $links = array_filter($links, function ($link) {
-        return $link->name;
-    });
-    shuffle($links);
-    ?>
-    <?php $index = 1 ?>
-    <?php foreach ($links as $link): ?>
+    <?php if (Site::get(Site::NAME_LINKED_ALLOW) == Site::ENABLE): ?>
+        友情链接:
         <?php
-        if ($this->options->freeLinkNum && $this->options->freeLinkNum > '0'
-            && $index++ > (int)$this->options->freeLinkNum) {
-            break;
-        }
+        $links = IExtend::search(LinkedExtend::TABLE_NAME, 1, Site::get(Site::NAME_LINKED_NUM));
+        shuffle($links);
         ?>
-        <a href="<?php echo $link->link ?>" target="_blank"><?php echo $link->name ?></a>
-    <?php endforeach; ?>
+        <?php foreach ($links as $link): ?>
+            <a href="<?php echo $link['link'] ?>" target="_blank"><?php echo $link['name'] ?></a>
+        <?php endforeach; ?>
+
+    <?php endif; ?>
     <br>
-    <?php echo $this->options->freeFooter ?: '© 2021-2022 <a href="/">' . $this->options->title . '</a>' ?>
+    <?php echo Site::get(Site::NAME_SITE_FOOTER) ?: '© 2022-2023 <a href="/">' . $this->options->title . '</a>' ?>
 </footer>
 </div>
 <div class="right-bar bg-white hide-md">
     <div class="right-tab">
         <ul class="pos-rlt bottom-shadow">
             <li data-select="hot-selector" class="active"><a href="javascript:void (0);"><i
-                            class="iconfont icon-hot"></i></a></li>
-            <li data-select="new-selector"><a href="javascript:void (0);"><i class="iconfont icon-new"></i></a>
+                            class="fa fa-fire"></i></a></li>
+            <li data-select="new-selector"><a href="javascript:void (0);"><i class="fa fa-comment"></i></a>
             </li>
             <span class="pos-abs"></span>
         </ul>
@@ -35,12 +41,12 @@
             <h3>热门文章</h3>
             <div class="right-item-body">
                 <ul class="item-blog-list">
-                    <?php $this->widget('Hot_Article_Widget@hot')->to($hot); ?>
+                    <?php $this->widget('Freewind\Widget\HotWidght@hot')->to($hot); ?>
                     <?php while ($hot->next()): ?>
                         <li>
                             <a href="<?php $hot->permalink() ?>"><?php $hot->title(); ?></a>
-                            <p><i class="iconfont icon-eye"><?php echo Freewind_Article::views($hot) ?> </i><i
-                                        class="iconfont icon-clock1"><?php $hot->date('Y-m-d'); ?> </i></p>
+                            <p><i class="fa fa-eye"><?php echo Article::views($hot) ?> </i><i
+                                        class="fa fa-clock-o"><?php $hot->date('Y-m-d'); ?> </i></p>
                         </li>
                     <?php endwhile; ?>
                 </ul>
@@ -54,7 +60,7 @@
                     <?php while ($comments->next()): ?>
                         <li class="pos-rlt">
                             <div class="pos-abs avatar shadow">
-                                <img src="<?php echo Freewind_Avatar::get_avatar($comments->mail) ?>" alt="">
+                                <img src="<?php echo Avatar::get($comments->mail) ?>" alt="">
                             </div>
                             <strong><?php $comments->author(false); ?></strong>
                             <p class="comm"><?php echo preg_replace("/<br>|<p>|<\/p>|<li>|<\/li>/", ' ', $comments->text) ?>
@@ -77,7 +83,7 @@
     <div class="right-item">
         <h3>标签云</h3>
         <div class="right-item-body tag-cloud">
-            <?php Typecho_Widget::widget('Widget_Metas_Tag_Cloud')->to($tags); ?>
+            <?php Widget::widget('Widget\Metas\Tag\Cloud')->to($tags); ?>
             <?php if ($tags->have()): ?>
                 <?php $index = 0 ?>
                 <?php while ($tags->next()):
@@ -89,29 +95,19 @@
             <?php endif; ?>
         </div>
     </div>
-
-    <div class="right-item">
-        <h3>友情链接</h3>
-        <div class="right-item-body friend-random">
-            <?php
-            $links = json_decode($this->options->freeLinkList);
-            $links = array_filter($links, function ($link) {
-                return $link->name;
-            });
-            shuffle($links);
-            $index = 1;
-            foreach ($links as $link):
-                ?>
+    <?php if (Site::get(Site::NAME_LINKED_ALLOW) == Site::ENABLE): ?>
+        <div class="right-item">
+            <h3>友情链接</h3>
+            <div class="right-item-body friend-random">
                 <?php
-                if ($this->options->freeLinkNum && $this->options->freeLinkNum > '0'
-                    && $index++ > (int)$this->options->freeLinkNum) {
-                    break;
-                }
-                ?>
-                <a href="<?php echo $link->link ?>" target="_blank"><?php echo $link->name ?></a>
-            <?php endforeach; ?>
+                $links = IExtend::search(LinkedExtend::TABLE_NAME, 1, Site::get(Site::NAME_LINKED_NUM));
+                shuffle($links);
+                foreach ($links as $link):?>
+                    <a href="<?php echo $link['link'] ?>" target="_blank"><?php echo $link['name'] ?></a>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
     <?php if ($this->is('post')): ?>
         <div class="right-item">
             <h3>文章目录</h3>
@@ -150,7 +146,7 @@
         </div>
         <p class="keywords-list">
             <span>推荐关键字：</span>
-            <?php Typecho_Widget::widget('Widget_Metas_Tag_Cloud')->to($tags); ?>
+            <?php Widget::widget('Widget_Metas_Tag_Cloud')->to($tags); ?>
             <?php if ($tags->have()): ?>
                 <?php $index = 0 ?>
                 <?php while ($tags->next()):
@@ -166,19 +162,21 @@
 
 <div id="bottom-btn-list">
     <a id="top-btn" href="javascript:void (0);"><i class="fa fa-arrow-up"></i></a>
-    <a class="qq-btn" data-qq="<?php echo $this->options->freeLinkQQ; ?>"
-       href="http://wpa.qq.com/msgrd?v=3&amp;uin=<?php echo $this->options->freeLinkQQ; ?>&amp;site=qq&amp;menu=yes"
-       target="_blank"><i class="fa fa-qq"></i></a>
+    <?php if (Site::get(Site::NAME_MASTER_QQ_ALLOW) == Site::ENABLE): ?>
+        <a class="qq-btn" data-qq="<?php echo Site::get(Site::NAME_MASTER_QQ); ?>"
+           href="tencent://message/?uin=<?php echo Site::get(Site::NAME_MASTER_QQ); ?>&Site=&menu=yes"
+           target="_blank"><i class="fa fa-qq"></i></a>
+    <?php endif; ?>
 </div>
 <div id="right-tool-bar">
-    <?php Typecho_Plugin::factory('freewind')->rightToolBar($this); ?>
-    <?php if ($this->options->freeAllowColor == 1) : ?>
+    <?php Plugin::factory('freewind')->rightToolBar($this); ?>
+    <?php if (Site::get(Site::NAME_SITE_STYLE_ALLOW) == Site::ENABLE) : ?>
         <div id="right-color" class="right-tool-item" style="width: 300px;">
             <a class="right-btn" data-target="right-color" href="javascript:void(0)">
-                <i style="font-size: 20px" class="iconfont icon-set"></i></a>
+                <i style="font-size: 20px" class="fa fa-cog"></i></a>
             <div class="right-title">配色方案</div>
             <div class="right-content" style="border-radius: 0 0 10px 10px">
-                <?php $colors = Freewind_Helper::color_list() ?>
+                <?php $colors = FreewindHelper::colorList() ?>
                 <?php foreach ($colors as $color): ?>
                     <a href="javascript:void(0)" class="set-color-btn"
                        data-color="<?php echo $color['filename'] ?>">
@@ -195,8 +193,8 @@
         </div>
     <?php endif; ?>
 </div>
-<script src="<?php $this->options->themeUrl('static/js/freewind.function.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('static/js/freewind.core.js'); ?>"></script>
+<script src="<?php Helper::options()->themeUrl('static/js/freewind.function.js') ?>"></script>
+<script src="<?php Helper::options()->themeUrl('static/js/freewind.core.js') ?>"></script>
 
 <?php if ($this->is('index')) : ?>
     <script>
@@ -208,7 +206,7 @@
         })
     </script>
 <?php endif; ?>
-<?php $this->options->freeJs() ?>
+<?php echo Site::get(Site::NAME_DEP_GLOBAL_JS) ?>
 <?php $this->footer(); ?>
 <script>
     $.fn.serializeJson = function () {
@@ -218,7 +216,7 @@
         });
         return serializeObj;
     };
-    <?php if ($this->options->freeMenu == 1): ?>
+    <?php if (Site::get(Site::NAME_RIGHT_ALLOW) == Site::ENABLE): ?>
     // 右键
     $('body').contextMenu({
         width: 110,
@@ -261,17 +259,15 @@
                     location.reload()
                 }
             }
-            <?php
-            $menuList = json_decode($this->options->freeMenuList);
-            $menuList = array_filter($menuList, function ($menu) {
-                return $menu->name;
-            });
-            foreach ($menuList as $menu):
-            ?>
+            <?php foreach (IExtend::lst(RightExtend::TABLE_NAME, RightExtend::CACHE_PREFIX, ['status' => RightExtend::STATUS_ENABLE], 'ordered') as $menu):?>
             , {
-                text: "<i class='fa <?php echo $menu->icon ?>'></i><?php echo $menu->name ?>",
+                text: "<i class='fa <?php echo $menu['icon'] ?>'></i><?php echo $menu['name'] ?>",
                 callback: function () {
-                    location.href = '<?php echo $menu->url; ?>'
+                    <?php if ($menu['type'] == RightExtend::TYPE_LINK): ?>
+                    location.href = '<?php echo $menu['link']; ?>'
+                    <?php else: ?>
+                    <?php echo $menu['script']?>
+                    <?php endif; ?>
                 }
             }
             <?php endforeach; ?>
@@ -280,10 +276,10 @@
     <?php endif;?>
 
 
-    <?php if ($this->options->freeCopy == 1):?>
+    <?php if (Site::get(Site::NAME_SITE_COPY_ALLOW) == Site::ENABLE):?>
     //复制回调
     document.body.oncopy = function () {
-        cocoMessage.warning("<?php echo $this->options->freeCopyTips?>", 2000);
+        cocoMessage.warning("<?php echo Site::get(Site::NAME_SITE_COPY_TEXT) ?>", 2000);
     }
     <?php endif; ?>
 
@@ -292,7 +288,8 @@
         if (window.freewind.page) {
             window.freewind.registerPage()
         }
-        <?php Typecho_Plugin::factory('freewind')->pjaxload(); ?>
+        <?php Plugin::factory('freewind')->pjaxload(); ?>
+        <?php echo Site::get(Site::NAME_DEP_PJAX_LOAD)?>
         window.freewind.topInit()
         window.freewind.registerHandler()
     }
@@ -307,7 +304,6 @@
         }
     ).on('pjax:send', function () {
         NProgress.start();//加载动画效果开始
-
     }).on('pjax:complete', function () {
         reload();
         NProgress.done();//加载动画效果结束

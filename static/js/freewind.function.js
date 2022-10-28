@@ -30,74 +30,44 @@ function Freewind(page = false) {
     let categoryChart = echarts.init(categoryCtx);
     let categoryOption = {
         title: {
-            text: '分类雷达图',
-            textStyle: {
-                fontSize: 14,
-                fontWeight: 'light'
+            text: '分类雷达图', textStyle: {
+                fontSize: 14, fontWeight: 'light'
             }
-        },
-        radar: {
-            center: ['50%', '50%'],
-            radius: 50,
-            name: {
+        }, radar: {
+            center: ['50%', '50%'], radius: 50, name: {
                 textStyle: {
-                    color: '#111',
-                    borderRadius: 3,
-                    padding: [3, 5]
+                    color: '#111', borderRadius: 3, padding: [3, 5]
                 },
-            },
-            indicator: [
-                {name: 'emlog教程', max: 8},
-                {name: '网站相关', max: 8},
-                {name: 'Linux学习', max: 8},
-                {name: 'Mac小技能', max: 8},
-                {name: '后端技术学习', max: 8},
-                {name: '前端小知识', max: 8},
-                {name: '其它', max: 8}
-            ],
-        },
-        series: [{
-            type: 'radar',
-            color: '#3ECF8E',
-            data: [
-                {
-                    value: [8, 5, 2, 3, 2, 3, 1],
-                    areaStyle: {
-                        opacity: 0.3,
-                        color: '#3ECF8E'
-                    },
-                    fontStyle: {
-                        fontSize: '12px',
-                    }
+            }, indicator: [{name: 'emlog教程', max: 8}, {name: '网站相关', max: 8}, {
+                name: 'Linux学习', max: 8
+            }, {name: 'Mac小技能', max: 8}, {name: '后端技术学习', max: 8}, {name: '前端小知识', max: 8}, {
+                name: '其它', max: 8
+            }],
+        }, series: [{
+            type: 'radar', color: '#3ECF8E', data: [{
+                value: [8, 5, 2, 3, 2, 3, 1], areaStyle: {
+                    opacity: 0.3, color: '#3ECF8E'
+                }, fontStyle: {
+                    fontSize: '12px',
                 }
-            ]
+            }]
         }]
     };
     let labelsCtx = document.getElementById("labels")
     let labelsChart = echarts.init(labelsCtx);
     let labelsOption = {
         title: {
-            text: '标签统计',
-            textStyle: {
-                fontSize: 14,
-                fontWeight: 'light'
+            text: '标签统计', textStyle: {
+                fontSize: 14, fontWeight: 'light'
             }
-        },
-        grid: [{
-            left: '10%',
-            bottom: '30%',
-            top: '15%',
-            right: '10%'
+        }, grid: [{
+            left: '10%', bottom: '30%', top: '15%', right: '10%'
         }],
 
         xAxis: {
-            type: 'category',
-            data: [],
-            axisLabel: {
-                color: '#333',
-                //  让x轴文字方向为竖向
-                interval: 0,
-                formatter: function (params) {
+            type: 'category', data: [], axisLabel: {
+                color: '#333', //  让x轴文字方向为竖向
+                interval: 0, formatter: function (params) {
                     let newParamsName = '' // 最终拼接成的字符串
                     let paramsNameNumber = params.length // 实际标签的个数
                     let provideNumber = 2 // 每行能显示的字的个数
@@ -131,45 +101,32 @@ function Freewind(page = false) {
                 }// x轴文字换行
 
             }
-        },
-        yAxis: {
+        }, yAxis: {
             type: 'value'
-        },
-        series: [{
-            data: [],
-            type: 'bar'
+        }, series: [{
+            data: [], type: 'bar'
         }]
     };
     let timeCtx = document.getElementById("time-statistic")
     let timeChart = echarts.init(timeCtx);
     let timeOption = {
         title: {
-            text: '发布动态图',
-            textStyle: {
-                fontSize: 14,
-                fontWeight: 'light'
+            text: '发布动态图', textStyle: {
+                fontSize: 14, fontWeight: 'light'
             }
-        },
-        xAxis: {
-            type: 'category',
-            data: []
-        },
-        yAxis: {
+        }, xAxis: {
+            type: 'category', data: []
+        }, yAxis: {
             type: 'value'
-        },
-        series: [{
-            data: [],
-            type: 'line'
+        }, series: [{
+            data: [], type: 'line'
         }]
     }
     this.headHight = $("#app-header").height() + 20;
 
     this.refreshChart = function () {
         $.ajax({
-            url: `${that.siteUrl}report`,
-            dataType: 'json',
-            async: false,
-            success: res => {
+            url: `${that.siteUrl}report`, dataType: 'json', async: false, success: res => {
                 let article = res.data['article']
                 let category = res.data['category']
                 let tag = res.data['tag']
@@ -180,18 +137,14 @@ function Freewind(page = false) {
                     timeY.push(article[i]['count'])
                 }
                 timeOption.xAxis.data = timeX;
-                timeOption.series = [
-                    {
-                        data: timeY,
-                        type: 'line'
-                    }
-                ]
+                timeOption.series = [{
+                    data: timeY, type: 'line'
+                }]
                 let categoryS = [];
                 let categoryI = [];
                 for (let i = 0; i < category.length; i++) {
                     categoryI.push({
-                        name: category[i]['name'],
-                        max: category[0]['count']
+                        name: category[i]['name'], max: category[0]['count']
                     })
                     categoryS.push(category[i]['count'])
                 }
@@ -203,16 +156,14 @@ function Freewind(page = false) {
                 for (let i = 0; i < tag.length; i++) {
                     tagX.push(tag[i]['name'])
                     tagY.push({
-                        value: tag[i]['count'],
-                        itemStyle: {
+                        value: tag[i]['count'], itemStyle: {
                             color: tagColor[i]
                         }
                     })
                 }
                 labelsOption.xAxis.data = tagX
                 labelsOption.series = [{
-                    data: tagY,
-                    type: 'bar'
+                    data: tagY, type: 'bar'
                 }]
             }
         })
@@ -271,18 +222,14 @@ function Freewind(page = false) {
         let emotions = [];
         let expression = [];
         $.ajax({
-            url: that.freewindCdn + 'json/emotions.json',
-            async: false,
-            success: res => {
+            url: that.freewindCdn + 'json/emotions.json', async: false, success: res => {
                 for (let i = 0; i < res.length; i++) {
                     emotions.push({src: that.freewindCdn + res[i]['src'], alt: res[i]['alt']})
                 }
             }
         })
         $.ajax({
-            url: that.freewindCdn + 'json/expression.json',
-            async: false,
-            success: res => {
+            url: that.freewindCdn + 'json/expression.json', async: false, success: res => {
                 for (let i = 0; i < res.length; i++) {
                     expression.push({src: that.freewindCdn + res[i]['src'], alt: res[i]['alt']})
                 }
@@ -292,27 +239,12 @@ function Freewind(page = false) {
         const editor = new E("#common-edit")
         editor.config.height = 150
         editor.config.placeholder = '你的评论一针见血'
-        editor.config.menus = [
-            'bold',
-            'italic',
-            'underline',
-            'strikeThrough',
-            'foreColor',
-            'link',
-            'emoticon',
-            'undo',
-            'redo',
-        ]
+        editor.config.menus = ['bold', 'italic', 'underline', 'strikeThrough', 'foreColor', 'link', 'emoticon', 'undo', 'redo',]
         editor.config.emotions = [{
-            title: 'QQ表情',
-            type: 'image',
-            content: emotions
+            title: 'QQ表情', type: 'image', content: emotions
         }, {
-            title: '其它表情',
-            type: 'image',
-            content: expression
-        }
-        ]
+            title: '其它表情', type: 'image', content: expression
+        }]
 
         editor.config.onchange = function (html) {
             that.comment.comText.val(html)
@@ -403,15 +335,10 @@ function Freewind(page = false) {
         let method = $(this).attr('method');
         let data = $(this).serializeJson();
         let pname = $("#comPname");
-        if (pname.val())
-            data['text'] = `<p><span class="parent-name">@${pname.val()}</span></p>` + data['text'];
+        if (pname.val()) data['text'] = `<p><span class="parent-name">@${pname.val()}</span></p>` + data['text'];
         let closeLoad = cocoMessage.loading(true);
         $.ajax({
-            url: url,
-            type: method,
-            data: data,
-            dataType: 'json',
-            success: res => {
+            url: url, type: method, data: data, dataType: 'json', success: res => {
                 closeLoad()
                 if (res.success) {
                     cocoMessage.success(res.msg, 1000, function () {
@@ -420,8 +347,7 @@ function Freewind(page = false) {
                 } else {
                     cocoMessage.error(res.msg, 1000);
                 }
-            },
-            error: res => {
+            }, error: res => {
                 closeLoad()
             }
         })
@@ -446,9 +372,7 @@ function Freewind(page = false) {
         if (qq) {
             let closeLoad = cocoMessage.loading(true);
             $.ajax({
-                url: "https://api.usuuu.com/qq/" + qq,
-                dataType: "json",
-                success: res => {
+                url: "https://api.usuuu.com/qq/" + qq, dataType: "json", success: res => {
                     closeLoad()
                     if (res.code === 200) {
                         let mail = qq + "@qq.com";
@@ -460,8 +384,7 @@ function Freewind(page = false) {
                     } else {
                         cocoMessage.error(res.msg, 2000)
                     }
-                },
-                error: res => {
+                }, error: res => {
                     closeLoad()
                 }
             })
@@ -482,22 +405,23 @@ function Freewind(page = false) {
     }
 
     this.registerHandler = function () {
+        $('.nav-list .fw-nav-item a').on('click', function () {
+            $('.nav-list .fw-nav-item a').removeClass('nav-active')
+            $(this).addClass('nav-active')
+            console.log($(this).attr('class'));
+            return true;
+        })
         $("img.lazy").lazyload({
-            placeholder: "http://cos.kevinlu98.cn/static/image/upload.png",
-            effect: "fadeIn", // 载入使用何种效果
+            placeholder: "http://cos.kevinlu98.cn/static/image/upload.png", effect: "fadeIn", // 载入使用何种效果
             threshold: 200, // 提前开始加载
         });
         new Swiper("#swiper-slider", {
-            loop: true,
-            autoplay: {
+            loop: true, autoplay: {
                 delay: 3000,//1秒切换一次
-            },
-            pagination: {
+            }, pagination: {
                 el: '.swiper-pagination',
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
+            }, navigation: {
+                nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev',
             },
         });
         $(".blog-item .photo-list img:nth-child(2n)").after('<br>')
@@ -509,11 +433,7 @@ function Freewind(page = false) {
             let data = $(this).serializeObject();
             let closeLoad = cocoMessage.loading(true);
             $.ajax({
-                url: url,
-                type: "POST",
-                data: data,
-                dataType: 'json',
-                success: res => {
+                url: url, type: "POST", data: data, dataType: 'json', success: res => {
                     closeLoad()
                     if (res.success) {
                         cocoMessage.success(res.msg, 2000, function () {
@@ -522,8 +442,7 @@ function Freewind(page = false) {
                     } else {
                         cocoMessage.error(res.msg, 1000);
                     }
-                },
-                error: res => {
+                }, error: res => {
                     closeLoad()
                     cocoMessage.error('发生未知错误', 2000);
                 }
@@ -542,11 +461,7 @@ function Freewind(page = false) {
             let data = $(this).serializeObject();
             let closeLoad = cocoMessage.loading(true);
             $.ajax({
-                url: url,
-                type: "POST",
-                data: data,
-                dataType: 'json',
-                success: res => {
+                url: url, type: "POST", data: data, dataType: 'json', success: res => {
                     closeLoad()
                     if (res.success) {
                         cocoMessage.success(res.msg, 2000, function () {
@@ -556,8 +471,7 @@ function Freewind(page = false) {
                         cocoMessage.error(res.msg, 2000);
                         $("#code-img").attr('src', '/verify/code?time=' + new Date().getTime())
                     }
-                },
-                error: res => {
+                }, error: res => {
                     closeLoad()
                     cocoMessage.error('发生未知错误', 2000);
                 }
@@ -591,15 +505,11 @@ function Freewind(page = false) {
         $('.post-suport').on('click', function () {
             let cid = $(this).data('cid');
             $.ajax({
-                url: `${that.siteUrl}support`,
-                type: 'POST',
-                data: {
+                url: `${that.siteUrl}support`, type: 'POST', data: {
                     cid: cid
-                },
-                dataType: 'json',
-                success: res => {
+                }, dataType: 'json', success: res => {
                     if (res.success) {
-                        $(this).parent().removeClass('icon-xin').addClass('icon-theheart-fill')
+                        $(this).parent().removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up')
                         $(this).text('(' + res.data + ')' + '已赞')
                     } else {
                         cocoMessage.error(res.msg, 1000);
@@ -648,7 +558,7 @@ function Freewind(page = false) {
                 <div class="mac-bar pos-rlt">
                 <i></i><i></i><i></i>
                 <span class="copy-tips pos-abs">复制</span>
-                <a href="javascript:void(0);" class="copy-btn pos-abs iconfont icon-clipboardxieziban"></a>
+                <a href="javascript:void(0);" class="copy-btn pos-abs fa fa-file-text-o"></a>
                 </div>`)
         $("#write .mac-bar .copy-btn").mouseenter(function () {
             $(this).parent().children('.copy-tips').stop().fadeIn()

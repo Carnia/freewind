@@ -4,6 +4,11 @@
  *
  * @package custom
  */
+
+use Freewind\Core\Article;
+use Freewind\Widget\ArticleWidget;
+use Typecho\Plugin;
+
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('include/header.php');
 ?>
@@ -25,7 +30,7 @@ $this->need('include/header.php');
     </div>
     <div class="blog-content">
         <div class="crumbs bottom-shadow">
-            <a href="<?php $this->options->siteUrl(); ?>"><i class="iconfont icon-home"></i> 首页</a> <i
+            <a href="<?php $this->options->siteUrl(); ?>"><i class="fa fa-home"></i> 首页</a> <i
                     class="split">/</i>
             <strong><?php $this->archiveTitle(array(
                     'category' => _t('分类 %s 下的文章'),
@@ -35,12 +40,16 @@ $this->need('include/header.php');
                 ), '', ''); ?></strong>
         </div>
         <div style="margin:10px 20px;">
-            <?php Typecho_Plugin::factory('freewind')->contentTop($this); ?>
+            <?php Plugin::factory('freewind')->contentTop($this); ?>
         </div>
         <div class="blog-list" style="padding: 0 20px">
             <?php
-            $post = new Article_Widget($this);
-            $article = $post->articles();
+            $post = new ArticleWidget($this);
+            try {
+                $article = $post->articles();
+            } catch (\Typecho\Db\Exception $e) {
+                $article = [];
+            }
             $year = 0;
             $mon = 0;
             $i = 0;
@@ -48,7 +57,8 @@ $this->need('include/header.php');
             $output = '';
             $color = Freewind_Utils::link_color();
             ?>
-            <div class="bottom-shadow time-list-box" style="padding: 10px 0;background-color:#fff;;margin-bottom: 20px;">
+            <div class="bottom-shadow time-list-box"
+                 style="padding: 10px 0;background-color:#fff;;margin-bottom: 20px;">
                 <div class="time-list">
                     <?php while ($article->next()):
                         $year_tmp = date('Y', $article->created);
@@ -66,7 +76,7 @@ $this->need('include/header.php');
                         }
                         $output .= '<li><div class="time-day" style="background-color:' . $color . ';"><span>' . date('d日', $article->created) . '</span></div>
 <p class="time-author"><b>' . $article->author->screenName . '</b> 发布了<a href="' . $article->permalink . '">《' . $article->title . '》</a></p>
-<p class="time-content" style="background-color:' . $color . ';"><i class="left-angle" style="border-color: ' . $color . ' transparent transparent transparent;"></i>' . Freewind_Article::summery($article) . '</p></li>'
+<p class="time-content" style="background-color:' . $color . ';"><i class="left-angle" style="border-color: ' . $color . ' transparent transparent transparent;"></i>' . Article::summery($article) . '</p></li>'
                         ?>
 
                     <?php endwhile;
@@ -76,7 +86,10 @@ $this->need('include/header.php');
                 </div>
             </div>
 
-            <?php $post->pageNav() ?>
+            <?php try {
+                $post->pageNav();
+            } catch (\Typecho\Db\Exception $e) {
+            } ?>
         </div>
     </div>
 

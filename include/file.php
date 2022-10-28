@@ -1,22 +1,28 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php use Freewind\Core\Article;
+use Freewind\Extend\ArticleExtend;
+
+if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php
-$postFile = $this->fields->postFile ?: '{postFile:1}';
-$fileType = json_decode($postFile, true);
+//$postFile = $this->fields->postFileList ?: '{postFile:1}';
+//$fileType = json_decode($postFile, true);
 ?>
-<?php if ($fileType['postFile'] >= 2): ?>
-    <?php if (Freewind_Article::enclosure($this, $fileType['postFile'])): ?>
+<?php if ($this->fields->postFileType >= 2): ?>
+    <?php if (Article::enclosure($this, $this->fields->postFileType)): ?>
+        <?php
+        $fileList = $this->fields->postFileList ?: '[]';
+        $fileList = json_decode($fileList, true);
+        ?>
         <div class="file-down bottom-shadow">
             <h3 style="padding: 0;margin: 0;font-weight: 100;font-size: 16px">附件下载</h3>
             <ul>
-                <?php foreach (__FILE_DOWNLOAD_ICON__ as $key => $icon): ?>
-                    <?php $downInfo = Freewind_Article::parseFile($fileType[$key]) ?>
-                    <?php if ($downInfo): ?>
+                <?php foreach ($fileList as $fileItem): ?>
+                    <?php if ($fileItem['url']): ?>
                         <li>
-                            <img class="file-icon" src="<?php echo $icon ?>" alt="">
-                            <div class="file-source">来源：<?php echo __FILE_DOWNLOAD_CNAME__[$key] ?></div>
-                            <div class="file-pwd">提取密码：<?php echo $downInfo['pwd'] ?: '暂无' ?></div>
-                            <a class="file-download" data-pwd="<?php echo $downInfo['pwd'] ?: '' ?>"
-                               href="<?php echo $downInfo['url'] ?>" target="_blank">
+                            <img class="file-icon" src="<?php echo $fileItem['icon'] ?>" alt="">
+                            <div class="file-source">来源：<?php echo $fileItem[name] ?></div>
+                            <div class="file-pwd">提取密码：<?php echo $fileItem['pwd'] ?: '暂无' ?></div>
+                            <a class="file-download" data-pwd="<?php echo $fileItem['pwd'] ?: '' ?>"
+                               href="<?php echo $fileItem['url'] ?>" target="_blank">
                                 <svg t="1639818585206" class="icon" viewBox="0 0 1024 1024" version="1.1"
                                      xmlns="http://www.w3.org/2000/svg" p-id="29104" width="48" height="48">
                                     <path d="M523.73504 319.29344h-204.8c-16.896 0-30.72-13.824-30.72-30.72s13.824-30.72 30.72-30.72h204.8c16.896 0 30.72 13.824 30.72 30.72s-13.824 30.72-30.72 30.72zM605.65504 452.41344h-286.72c-16.896 0-30.72-13.824-30.72-30.72s13.824-30.72 30.72-30.72h286.72c16.896 0 30.72 13.824 30.72 30.72s-13.824 30.72-30.72 30.72z"
@@ -35,7 +41,7 @@ $fileType = json_decode($postFile, true);
     <?php else: ?>
         <div class="file-not-view bottom-shadow">
             <p>
-                对不起，作者设置了附件 <a href="#common-edit"><?php echo __FILE_VIEW_TYPE__[$fileType['postFile']] ?></a> 可见
+                对不起，作者设置了附件 <a href="#common-edit"><?php echo ArticleExtend::File_POWER_LIST[$this->fields->postFileType] ?></a>
             </p>
         </div>
     <?php endif ?>

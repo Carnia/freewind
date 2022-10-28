@@ -1,4 +1,6 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php use Freewind\Core\FreewindHelper;
+
+if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,9 +15,9 @@
         ), '', ' - '); ?><?php $this->options->title(); ?>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="<?php echo Freewind_Helper::freeCdn('404/normalize.min.css') ?>">
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?php echo Freewind_Helper::freeCdn('404/style.min.css') ?>">
+    <link rel="stylesheet" href="<?php echo FreewindHelper::freeCdn('404/normalize.min.css') ?>">
+    <link href="<?php echo FreewindHelper::freeCdn('plugin/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo FreewindHelper::freeCdn('404/style.min.css') ?>">
 </head>
 <body>
 <main>
@@ -315,8 +317,8 @@
     </div>
 </main>
 <!-- partial -->
-<script src="<?php echo freeCdn('404/gsap.min.js') ?>"></script>
-<script src="<?php echo freeCdn('404/script.min.js') ?>"></script>
+<script src="<?php echo FreewindHelper::freeCdn('404/gsap.min.js') ?>"></script>
+<script src="<?php echo FreewindHelper::freeCdn('404/script.js') ?>"></script>
 
 
 <div id="color-picker-wrap" style="display: none; position: fixed; top: 0; left: 0; z-index: 9999;"><!----></div>

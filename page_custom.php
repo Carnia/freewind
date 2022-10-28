@@ -4,6 +4,9 @@
  *
  * @package custom
  */
+
+use Typecho\Plugin;
+
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('include/header.php');
 ?>
@@ -24,7 +27,7 @@ $this->need('include/header.php');
 </div>
 <div class="blog-content">
     <div class="crumbs bottom-shadow">
-        <a href="<?php $this->options->siteUrl(); ?>"><i class="iconfont icon-home"></i> 首页</a> <i class="split">/</i>
+        <a href="<?php $this->options->siteUrl(); ?>"><i class="fa fa-home"></i> 首页</a> <i class="split">/</i>
         <strong><?php $this->archiveTitle(array(
                 'category' => _t('分类 %s 下的文章'),
                 'search' => _t('包含关键字 %s 的文章'),
@@ -33,10 +36,10 @@ $this->need('include/header.php');
             ), '', ''); ?></strong>
     </div>
     <div style="margin:10px 20px;">
-        <?php Typecho_Plugin::factory('freewind')->contentTop($this); ?>
+        <?php Plugin::factory('freewind')->contentTop($this); ?>
     </div>
     <div id="write" class="bottom-shadow">
-        <?php echo Freewind_Article::_content($this)?>
+        <?php echo $this->content?>
     </div>
     <?php $this->need('include/comments.php'); ?>
 </div>
